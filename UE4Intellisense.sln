@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UE4Intellisense", "UE4Intellisense\UE4Intellisense.csproj", "{73627F81-DCFE-4EC5-AFB4-A4C5FC3F393E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73627F81-DCFE-4EC5-AFB4-A4C5FC3F393E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73627F81-DCFE-4EC5-AFB4-A4C5FC3F393E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73627F81-DCFE-4EC5-AFB4-A4C5FC3F393E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73627F81-DCFE-4EC5-AFB4-A4C5FC3F393E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
