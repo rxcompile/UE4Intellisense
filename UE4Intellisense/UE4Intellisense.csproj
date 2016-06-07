@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UE4CompletionSource.cs" />
+    <Compile Include="UE4Model.cs" />
+    <Compile Include="UE4SpecifiersSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -14,196 +14,94 @@ namespace UE4Intellisense
     {
         private UE4SpecifiersCompletionSourceProvider m_sourceProvider;
         private ITextBuffer m_textBuffer;
-        private List<Completion> m_compListProps;
-        private List<Completion> m_compListClass;
-        private List<Completion> m_compListFunc;
-        private List<Completion> m_compListStruct;
-        private List<Completion> m_compListIface;
 
         public UE4SpecifiersCompletionSource(UE4SpecifiersCompletionSourceProvider sourceProvider, ITextBuffer textBuffer)
         {
             m_sourceProvider = sourceProvider;
             m_textBuffer = textBuffer;
-
-            m_compListProps = @"
-AdvancedDisplay
-AssetRegistrySearchable
-BlueprintAssignable
-BlueprintCallable
-BlueprintReadOnly
-BlueprintReadWrite
-Category
-Config
-Const
-DuplicateTransient
-EditAnywhere
-EditDefaultsOnly
-EditFixedSize
-EditInline
-EditInstanceOnly
-Export
-GlobalConfig
-Instanced
-Interp
-Localized
-Native
-NoClear
-NoExport
-NonTransactional
-Ref
-Replicated
-ReplicatedUsing
-RepRetry
-SaveGame
-SerializeText
-SimpleDisplay
-Transient
-VisibleAnywhere
-VisibleDefaultsOnly
-VisibleInstanceOnly".Split(new char[] { '\n' })
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => s.Trim())
-            .Select(s => new Completion(s, s, s, null, null)).ToList();
-
-            m_compListClass = @"
-Abstract
-AdvancedClassDisplay
-AutoCollapseCategories
-AutoExpandCategories
-Blueprintable
-BlueprintType
-ClassGroup
-CollapseCategories
-Config
-Const
-ConversionRoot
-CustomConstructor
-DefaultToInstanced
-DependsOn
-Deprecated
-DontAutoCollapseCategories
-DontCollapseCategories
-EditInlineNew
-HideCategories
-HideDropdown
-HideFunctions
-Intrinsic
-MinimalAPI
-NoExport
-NonTransient
-NotBlueprintable
-NotPlaceable
-PerObjectConfig
-Placeable
-ShowCategories
-ShowFunctions
-Transient
-Within".Split(new char[] { '\n' })
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => s.Trim())
-            .Select(s => new Completion(s, s, s, null, null)).ToList();
-
-            m_compListFunc = @"
-BlueprintAuthorityOnly
-BlueprintCallable
-BlueprintCosmetic
-BlueprintImplementableEvent
-BlueprintNativeEvent
-BlueprintPure
-Category
-Client
-CustomThunk
-Exec
-NetMulticast
-Reliable
-Server
-Unreliable".Split(new char[] { '\n' })
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => s.Trim())
-            .Select(s => new Completion(s, s, s, null, null)).ToList();
-
-            m_compListStruct = @"
-Atomic
-BlueprintType
-Immutable
-NoExport".Split(new char[] { '\n' })
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => s.Trim())
-            .Select(s => new Completion(s, s, s, null, null)).ToList();
-
-            m_compListIface = @"
-Blueprintable
-DependsOn
-MinimalAPI
-NotBlueprintable".Split(new char[] { '\n' })
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => s.Trim())
-            .Select(s => new Completion(s, s, s, null, null)).ToList();
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
             var triggerPoint = session.GetTriggerPoint(m_textBuffer.CurrentSnapshot).GetValueOrDefault();
 
-            if (IsTrackUE4MacroSpecifier(triggerPoint, "UPROPERTY"))
+            var tracker = TrackUE4MacroSpecifier(triggerPoint);
+
+            if (tracker == null)
+                return;
+
+            if (tracker.MacroConst == UE4Macros.UProperty)
             {
                 var ue4cs = new CompletionSet(
                   "ue4",
                   "UProperty",
                   FindTokenSpanAtPosition(triggerPoint),
-                  m_compListProps,
+                  ConstructCompletions(UE4SpecifiersSource.UP, tracker.Specifiers),
                   null);
 
                 completionSets.Add(ue4cs);
             }
-            if (IsTrackUE4MacroSpecifier(triggerPoint, "UCLASS"))
+            if (tracker.MacroConst == UE4Macros.UClass)
             {
                 var ue4cs = new CompletionSet(
                   "ue4",
                   "UClass",
                   FindTokenSpanAtPosition(triggerPoint),
-                  m_compListClass,
+                  ConstructCompletions(UE4SpecifiersSource.UC, tracker.Specifiers),
                   null);
 
                 completionSets.Add(ue4cs);
             }
-            if (IsTrackUE4MacroSpecifier(triggerPoint, "UINTERFACE"))
+            if (tracker.MacroConst == UE4Macros.UInterface)
             {
                 var ue4cs = new CompletionSet(
                   "ue4",
                   "UInterface",
                   FindTokenSpanAtPosition(triggerPoint),
-                  m_compListIface,
+                  ConstructCompletions(UE4SpecifiersSource.UI, tracker.Specifiers),
                   null);
 
                 completionSets.Add(ue4cs);
             }
-            if (IsTrackUE4MacroSpecifier(triggerPoint, "UFUNCTION"))
+            if (tracker.MacroConst == UE4Macros.UFunction)
             {
                 var ue4cs = new CompletionSet(
                   "ue4",
                   "UFunction",
                   FindTokenSpanAtPosition(triggerPoint),
-                  m_compListFunc,
+                  ConstructCompletions(UE4SpecifiersSource.UF, tracker.Specifiers),
                   null);
 
                 completionSets.Add(ue4cs);
             }
-            if (IsTrackUE4MacroSpecifier(triggerPoint, "USTRUCT"))
+            if (tracker.MacroConst == UE4Macros.UStruct)
             {
                 var ue4cs = new CompletionSet(
                   "ue4",
                   "UStruct",
                   FindTokenSpanAtPosition(triggerPoint),
-                  m_compListStruct,
+                  ConstructCompletions(UE4SpecifiersSource.US, tracker.Specifiers),
                   null);
 
                 completionSets.Add(ue4cs);
             }
             session.SelectedCompletionSetChanged += SessionSelectedCompletionSetChanged;
         }
-        
-        private bool IsTrackUE4MacroSpecifier(SnapshotPoint triggerPoint, string macroConst)
+
+        private IEnumerable<Completion> ConstructCompletions(UE4Specifier[] compList, string[] specifiers)
+        {
+            var currentSpecs = compList.Where(g => specifiers.Contains(g.Name, StringComparer.InvariantCultureIgnoreCase));
+
+            return compList
+                .Where(g =>
+                    g.GroupId == null || // all not correlated Specifiers
+                    currentSpecs.All(t => t.GroupId != g.GroupId) || // and not specifier with same groupId
+                    currentSpecs.Contains(g) // except the one allready written
+                    )
+                .Select(g => new Completion(g.Name, g.Name, g.Desc, null, null));
+        }
+
+        private UE4Statement TrackUE4MacroSpecifier(SnapshotPoint triggerPoint)
         {
             SnapshotPoint currentPoint = triggerPoint - 1;
             ITextStructureNavigator navigator = m_sourceProvider.NavigatorService.GetTextStructureNavigator(m_textBuffer);
@@ -211,19 +109,24 @@ NotBlueprintable".Split(new char[] { '\n' })
 
             SnapshotSpan statement = navigator.GetSpanOfEnclosing(extent.Span);
             var statementText = statement.GetText();
-            var match = Regex.Match(statementText, $@"{macroConst}\((.*)\)", RegexOptions.IgnoreCase);
-            if (!match.Success)
-                return false;
-            if (!match.Groups[1].Success)
-                return false;
 
-            var contentPosition = statement.Start + match.Groups[1].Index;
-            var contentEnd = contentPosition + match.Groups[1].Length;
+            var macros = typeof(UE4Macros).GetEnumNames().Aggregate("", (a, e) => a += "|" + e);
+
+            var match = Regex.Match(statementText, $@"({macros})\((.*)\)", RegexOptions.IgnoreCase);
+            if (!match.Success)
+                return null;
+            if (!match.Groups[1].Success || !match.Groups[2].Success)
+                return null;
+
+            var macroConst = (UE4Macros)Enum.Parse(typeof(UE4Macros), match.Groups[1].Value);
+
+            var contentPosition = statement.Start + match.Groups[2].Index;
+            var contentEnd = contentPosition + match.Groups[2].Length;
 
             if (extent.Span.Start < contentPosition || extent.Span.End > contentEnd)
-                return false;
+                return null;
 
-            return true;
+            return new UE4Statement { MacroConst = macroConst, Specifiers = match.Groups[2].Value.Split(',').ToArray() };
         }
 
         private void SessionSelectedCompletionSetChanged(object sender, ValueChangedEventArgs<CompletionSet> e)
@@ -239,13 +142,13 @@ NotBlueprintable".Split(new char[] { '\n' })
                 session.SelectedCompletionSet = ue4sc;
             }
         }
-        
+
         private ITrackingSpan FindTokenSpanAtPosition(SnapshotPoint point)
         {
             SnapshotPoint currentPoint = point - 1;
             ITextStructureNavigator navigator = m_sourceProvider.NavigatorService.GetTextStructureNavigator(m_textBuffer);
             TextExtent extent = navigator.GetExtentOfWord(currentPoint);
-            
+
             return currentPoint.Snapshot.CreateTrackingSpan(extent.Span, SpanTrackingMode.EdgeInclusive);
         }
 
