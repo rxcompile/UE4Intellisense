@@ -16,10 +16,10 @@
 
     internal enum UE4Macros
     {
-        UProperty,
-        UClass,
-        UInterface,
-        UFunction,
-        UStruct
+        UPROPERTY,
+        UCLASS,
+        UINTERFACE,
+        UFUNCTION,
+        USTRUCT
     }
 }

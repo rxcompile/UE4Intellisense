@@ -31,65 +31,90 @@ namespace UE4Intellisense
             if (tracker == null)
                 return;
 
-            if (tracker.MacroConst == UE4Macros.UProperty)
+            if (tracker.MacroConst == UE4Macros.UPROPERTY)
             {
-                var ue4cs = new CompletionSet(
-                  "ue4",
-                  "UProperty",
-                  FindTokenSpanAtPosition(triggerPoint),
-                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UP, tracker.Specifiers) 
-                          : ConstructCompletions(UE4SpecifiersSource.UMP, tracker.MetaSpecifiers),
-                  null);
-
-                completionSets.Add(ue4cs);
+                if (inMeta)
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UPropertyMeta",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UMP, tracker.MetaSpecifiers),
+                        null));
+                else
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UProperty",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UP, tracker.Specifiers),
+                        null));
             }
-            if (tracker.MacroConst == UE4Macros.UClass)
+            if (tracker.MacroConst == UE4Macros.UCLASS)
             {
-                var ue4cs = new CompletionSet(
-                  "ue4",
-                  "UClass",
-                  FindTokenSpanAtPosition(triggerPoint),
-                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UC, tracker.Specifiers)
-                          : ConstructCompletions(UE4SpecifiersSource.UMC, tracker.MetaSpecifiers),
-                  null);
-
-                completionSets.Add(ue4cs);
+                if (inMeta)
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UClassMeta",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UMC, tracker.MetaSpecifiers),
+                        null));
+                else
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UClass",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UC, tracker.Specifiers),
+                        null));
             }
-            if (tracker.MacroConst == UE4Macros.UInterface)
+            if (tracker.MacroConst == UE4Macros.UINTERFACE)
             {
-                var ue4cs = new CompletionSet(
-                  "ue4",
-                  "UInterface",
-                  FindTokenSpanAtPosition(triggerPoint),
-                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UI, tracker.Specifiers)
-                          : ConstructCompletions(UE4SpecifiersSource.UMI, tracker.MetaSpecifiers),
-                  null);
-
-                completionSets.Add(ue4cs);
+                if (inMeta)
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UInterfaceMeta",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UMI, tracker.MetaSpecifiers),
+                        null));
+                else
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UInterface",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UI, tracker.Specifiers),
+                        null));
             }
-            if (tracker.MacroConst == UE4Macros.UFunction)
+            if (tracker.MacroConst == UE4Macros.UFUNCTION)
             {
-                var ue4cs = new CompletionSet(
-                  "ue4",
-                  "UFunction",
-                  FindTokenSpanAtPosition(triggerPoint),
-                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UF, tracker.Specifiers)
-                          : ConstructCompletions(UE4SpecifiersSource.UMF, tracker.MetaSpecifiers),
-                  null);
-
-                completionSets.Add(ue4cs);
+                if (inMeta)
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UFunctionMeta",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UMF, tracker.MetaSpecifiers),
+                        null));
+                else
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UFunction",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UF, tracker.Specifiers),
+                        null));
             }
-            if (tracker.MacroConst == UE4Macros.UStruct)
+            if (tracker.MacroConst == UE4Macros.USTRUCT)
             {
-                var ue4cs = new CompletionSet(
-                  "ue4",
-                  "UStruct",
-                  FindTokenSpanAtPosition(triggerPoint),
-                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.US, tracker.Specifiers)
-                          : ConstructCompletions(UE4SpecifiersSource.UMS, tracker.MetaSpecifiers),
-                  null);
-
-                completionSets.Add(ue4cs);
+                if (inMeta)
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UStructMeta",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.UMS, tracker.MetaSpecifiers),
+                        null));
+                else
+                    completionSets.Add(new CompletionSet(
+                        "ue4",
+                        "UStruct",
+                        FindTokenSpanAtPosition(triggerPoint),
+                        ConstructCompletions(UE4SpecifiersSource.US, tracker.Specifiers),
+                        null));
             }
             session.SelectedCompletionSetChanged += SessionSelectedCompletionSetChanged;
         }
@@ -132,7 +157,7 @@ namespace UE4Intellisense
             if (extent.Span.Start < contentPosition || extent.Span.End > contentEnd)
                 return null;
 
-            var macroConst = (UE4Macros)Enum.Parse(typeof(UE4Macros), match.Groups[1].Value);
+            var macroConst = (UE4Macros)Enum.Parse(typeof(UE4Macros), match.Groups[1].Value.ToUpper());
 
             List<string> specifiersList;
             List<string> metaList;
@@ -149,7 +174,7 @@ namespace UE4Intellisense
 
             inMeta = false;
 
-            var matchSpecs = Regex.Matches(inputstr, @"meta=\(\s*(([\w\d=]+)\,?)*\s*\)|([\w\d=]+)\,?", RegexOptions.IgnoreCase);
+            var matchSpecs = Regex.Matches(inputstr, @"meta\s*=\s*\(\s*((\w+\s*=?\s*[\w\d""]*)\,?)*\s*\)|(\w+\s*=?\s*[\w\d""]*)\,?", RegexOptions.IgnoreCase);
 
             foreach (var spec in matchSpecs)
             {
