@@ -174,27 +174,27 @@ namespace UE4Intellisense
 
             inMeta = false;
 
-            var matchSpecs = Regex.Matches(inputstr, @"meta\s*=\s*\(\s*((\w+\s*=?\s*[\w\d""]*)\,?)*\s*\)|(\w+\s*=?\s*[\w\d""]*)\,?", RegexOptions.IgnoreCase);
+            var matchSpecs = Regex.Matches(inputstr, @"meta\s*=\s*\(([\w\s=""]+\,?)*\)|(\w+\s*=?\s*[\w""]*)\,?", RegexOptions.IgnorePatternWhitespace, TimeSpan.FromMilliseconds(1000));
 
             foreach (var spec in matchSpecs)
             {
                 var mm = (Match)spec;
 
-                if (mm.Groups[2].Success)
+                if (mm.Groups[1].Success)
                 {
-                    var metaPositionStart = contentPosition + mm.Groups[2].Index;
-                    var metaPositionEnd = metaPositionStart + mm.Groups[2].Length;
+                    var metaPositionStart = contentPosition + mm.Groups[1].Index;
+                    var metaPositionEnd = metaPositionStart + mm.Groups[1].Length;
 
                     inMeta = (extent.Span.Start >= metaPositionStart && extent.Span.End <= metaPositionEnd);
 
-                    foreach (var ms in mm.Groups[2].Captures)
+                    foreach (var ms in mm.Groups[1].Captures)
                     {
-                        metaList.Add(((Capture)ms).Value);
+                        metaList.Add(((Capture)ms).Value.Trim(' ', ','));
                     }
                 }
 
-                if (mm.Groups[3].Success)
-                    specifiersList.Add(mm.Groups[3].Value);
+                if (mm.Groups[2].Success)
+                    specifiersList.Add(mm.Groups[2].Value.Trim(' ', ','));
             }
         }
 
