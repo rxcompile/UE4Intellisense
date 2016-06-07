@@ -4,6 +4,7 @@
     {
         public UE4Macros MacroConst { get; set; }
         public string[] Specifiers { get; set; }
+        public string[] MetaSpecifiers { get; set; }
     }
 
     internal class UE4Specifier

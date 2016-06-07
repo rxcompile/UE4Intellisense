@@ -126,5 +126,128 @@
             new UE4Specifier { Name = "Immutable", Desc = "Immutable is only legal in Object.h and is being phased out, do not use on new structs!" },
             new UE4Specifier { Name = "BlueprintType", Desc = "Exposes this struct as a type that can be used for variables in blueprints" },
         };
+
+        // Metadata usable in any UField (UCLASS(), USTRUCT(), UPROPERTY(), UFUNCTION(), etc...)
+        public static UE4Specifier[] UMGeneric = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "ToolTip", Desc = "Overrides the automatically generated tooltip from the class comment" },
+            new UE4Specifier { Name = "ShortTooltip", Desc = "A short tooltip that is used in some contexts where the full tooltip might be overwhelming (such as the parent class picker dialog)" },
+            };
+        // Metadata usable in UCLASS
+        public static UE4Specifier[] UMC = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "BlueprintSpawnableComponent", Desc = "[ClassMetadata] Used for Actor Component classes. If present indicates that it can be spawned by a Blueprint." },
+            new UE4Specifier { Name = "ChildCanTick", Desc = "[ClassMetadata] Used for Actor and Component classes. If the native class cannot tick, Blueprint generated classes based this Actor or Component can have bCanEverTick flag overridden even if bCanBlueprintsTickByDefault is false." },
+            new UE4Specifier { Name = "ChildCannotTick", Desc = "[ClassMetadata] Used for Actor and Component classes. If the native class cannot tick, Blueprint generated classes based this Actor or Component can never tick even if bCanBlueprintsTickByDefault is true." },
+            new UE4Specifier { Name = "IgnoreCategoryKeywordsInSubclasses", Desc = "[ClassMetadata] Used to make the first subclass of a class ignore all inherited showCategories and hideCategories commands" },
+            new UE4Specifier { Name = "DeprecatedNode", Desc = "[ClassMetadata] For BehaviorTree nodes indicates that the class is deprecated and will display a warning when compiled." },
+            new UE4Specifier { Name = "DeprecationMessage", Desc = "[ClassMetadata] [FunctionMetadata] Used in conjunction with DeprecatedNode or DeprecatedFunction to customize the warning message displayed to the user." },
+            new UE4Specifier { Name = "DisplayName", Desc = "[ClassMetadata] [PropertyMetadata] [FunctionMetadata] The name to display for this class, property, or function instead of auto-generating it from the name." },
+            new UE4Specifier { Name = "IsBlueprintBase", Desc = "[ClassMetadata] Specifies that this class is an acceptable base class for creating blueprints." },
+            new UE4Specifier { Name = "KismetHideOverrides", Desc = "[ClassMetadata] Comma delimited list of blueprint events that are not be allowed to be overridden in classes of this type" },
+            new UE4Specifier { Name = "ProhibitedInterfaces", Desc = "[ClassMetadata] Specifies interfaces that are not compatible with the class." },
+            new UE4Specifier { Name = "RestrictedToClasses", Desc = "[ClassMetadata] Used by BlueprintFunctionLibrary classes to restrict the graphs the functions in the library can be used in to the classes specified." },
+            new UE4Specifier { Name = "ShowWorldContextPin", Desc = "[ClassMetadata] Indicates that when placing blueprint nodes in graphs owned by this class that the hidden world context pin should be visible because the self context of the class cannot                 provide the world context and it must be wired in manually" },
+            new UE4Specifier { Name = "DontUseGenericSpawnObject", Desc = "[ClassMetadata] Do not spawn an object of the class using Generic Create Object node in Blueprint. It makes sense only for a BluprintType class, that is neither Actor, nor ActorComponent." },
+            new UE4Specifier { Name = "ExposedAsyncProxy", Desc = "[ClassMetadata] Expose a proxy object of this class in Async Task node." },
+            };
+        // Metadata usable in USTRUCT
+        public static UE4Specifier[] UMS = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "HasNativeBreak", Desc = "[StructMetadata] Indicates that the struct has a custom break node (and what the path to the BlueprintCallable UFunction is) that should be used instead of the default BreakStruct node.  " },
+            new UE4Specifier { Name = "HasNativeMake", Desc = "[StructMetadata] Indicates that the struct has a custom make node (and what the path to the BlueprintCallable UFunction is) that should be used instead of the default MakeStruct node.  " },
+            new UE4Specifier { Name = "HiddenByDefault", Desc = "[StructMetadata] Pins in Make and Break nodes are hidden by default." },
+        };
+        // Metadata usable in UPROPERTY for customizing the behavior when displaying the property in a property panel
+        public static UE4Specifier[] UMP = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "AllowAbstract", Desc = "[PropertyMetadata] Used for FStringClassReference properties.  Indicates whether abstract class types should be shown in the class picker." },
+            new UE4Specifier { Name = "AllowedClasses", Desc = "[PropertyMetadata] Used for FStringAssetReference properties.  Comma delimited list that indicates the class type(s) of assets to be displayed in the asset picker." },
+            new UE4Specifier { Name = "AllowPreserveRatio", Desc = "[PropertyMetadata] Used for FVector properties.  It causes a ratio lock to be added when displaying this property in details panels." },
+            new UE4Specifier { Name = "ArrayClamp", Desc = "[PropertyMetadata] Used for integer properties.  Clamps the valid values that can be entered in the UI to be between 0 and the length of the array specified." },
+            new UE4Specifier { Name = "ClampMin", Desc = "[PropertyMetadata] Used for float and integer properties.  Specifies the minimum value that may be entered for the property." },
+            new UE4Specifier { Name = "ClampMax", Desc = "[PropertyMetadata] Used for float and integer properties.  Specifies the maximum value that may be entered for the property." },
+            new UE4Specifier { Name = "DisplayThumbnail", Desc = "[PropertyMetadata] Indicates that the property is an asset type and it should display the thumbnail of the selected asset." },
+            new UE4Specifier { Name = "EditCondition", Desc = "[PropertyMetadata] Specifies a boolean property that is used to indicate whether editing of this property is disabled." },
+            new UE4Specifier { Name = "ExactClass", Desc = "[PropertyMetadata] Used for FStringAssetReference properties in conjunction with AllowedClasses. Indicates whether only the exact classes specified in AllowedClasses can be used or whether subclasses are valid." },
+            new UE4Specifier { Name = "ExposeFunctionCategories", Desc = "[PropertyMetadata] Specifies a list of categories whose functions should be exposed when building a function list in the Blueprint Editor." },
+            new UE4Specifier { Name = "ExposeOnSpawn", Desc = "[PropertyMetadata] Specifies whether the property should be exposed on a Spawn Actor for the class type." },
+            new UE4Specifier { Name = "FixedIncrement", Desc = "[PropertyMetadata] Deprecated." },
+            new UE4Specifier { Name = "HideAlphaChannel", Desc = "[PropertyMetadata] Used for FColor and FLinearColor properties. Indicates that the Alpha property should be hidden when displaying the property widget in the details." },
+            new UE4Specifier { Name = "InlineEditConditionToggle", Desc = "[PropertyMetadata] Signifies that the bool property is only displayed inline as an edit condition toggle in other properties, and should not be shown on its own row." },
+            new UE4Specifier { Name = "IsBlueprintBaseOnly", Desc = "[PropertyMetadata] Used for FStringClassReference properties.  Indicates whether only blueprint classes should be shown in the class picker." },
+            new UE4Specifier { Name = "OnlyPlaceable", Desc = "[PropertyMetadata] Used for Subclass properties. Indicates whether only placeable classes should be shown in the class picker." },
+            new UE4Specifier { Name = "MakeEditWidget", Desc = "[PropertyMetadata] Used for Transform/Rotator properties (also works on arrays of them). Indicates that the property should be exposed in the viewport as a movable widget." },
+            new UE4Specifier { Name = "MakeStructureDefaultValue", Desc = "[PropertyMetadata] For properties in a structure indicates the default value of the property in a blueprint make structure node." },
+            new UE4Specifier { Name = "MetaClass", Desc = "[PropertyMetadata] Used FStringClassReference properties. Indicates the parent class that the class picker will use when filtering which classes to display." },
+            new UE4Specifier { Name = "Multiple", Desc = "[PropertyMetadata] Used for numeric properties. Stipulates that the value must be a multiple of the metadata value." },
+            new UE4Specifier { Name = "MultiLine", Desc = "[PropertyMetadata] Used for FString and FText properties.  Indicates that the edit field should be multi-line, allowing entry of newlines." },
+            new UE4Specifier { Name = "PasswordField", Desc = "[PropertyMetadata] Used for FString and FText properties.  Indicates that the edit field is a secret field (e.g a password) and entered text will be replaced with dots. Do not use this as your only security measure.  The property data is still stored as plain text. " },
+            new UE4Specifier { Name = "NoElementDuplicate", Desc = "[PropertyMetadata] Used for array properties. Indicates that the duplicate icon should not be shown for entries of this array in the property panel." },
+            new UE4Specifier { Name = "NoSpinbox", Desc = "[PropertyMetadata] Used for integer and float properties. Indicates that the spin box element of the number editing widget should not be displayed." },
+            new UE4Specifier { Name = "FilePathFilter", Desc = "[PropertyMetadata] Used by FFilePath properties. Indicates the path filter to display in the file picker." },
+            new UE4Specifier { Name = "RelativePath", Desc = "[PropertyMetadta] Used by FDirectoryPath properties. Indicates that the directory dialog will output a relative path when setting the property." },
+            new UE4Specifier { Name = "RelativeToGameContentDir", Desc = "[PropertyMetadta] Used by FDirectoryPath properties. Indicates that the directory dialog will output a path relative to the game content directory when setting the property." },
+            new UE4Specifier { Name = "ContentDir", Desc = "[PropertyMetadta] Used by FDirectoryPath properties. Indicates that the path will be picked using the Slate-style directory picker inside the game Content dir." },
+            new UE4Specifier { Name = "ShowOnlyInnerProperties", Desc = "[PropertyMetadata] Used by struct properties. Indicates that the inner properties will not be shown inside an expandable struct, but promoted up a level." },
+            new UE4Specifier { Name = "SliderExponent", Desc = "[PropertyMetadata] Used by numeric properties. Indicates how rapidly the value will grow when moving an unbounded slider." },
+            new UE4Specifier { Name = "UIMin", Desc = "[PropertyMetadata] Used for float and integer properties.  Specifies the lowest that the value slider should represent." },
+            new UE4Specifier { Name = "UIMax", Desc = "[PropertyMetadata] Used for float and integer properties.  Specifies the highest that the value slider should represent." },
+            new UE4Specifier { Name = "ConfigHierarchyEditable", Desc = "[PropertyMetadata] Property is serialized to config and we should be able to set it anywhere along the config hierarchy." },
+            new UE4Specifier { Name = "BlueprintCompilerGeneratedDefaults", Desc = "[PropertyMetadata] Property defaults are generated by the Blueprint compiler and will not be copied when CopyPropertiesForUnrelatedObjects is called post-compile." },
+            new UE4Specifier { Name = "LongPackageName", Desc = "[PropertyMetadata] Used by FDirectoryPath properties.  Converts the path to a long package name" },
+        };
+        // Metadata usable in UPROPERTY for customizing the behavior of Persona and UMG
+        // TODO: Move this to be contained in those modules specifically?
+        public static UE4Specifier[] UMPP = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "NeverAsPin", Desc = "[PropertyMetadata] The property is not exposed as a data pin and is only be editable in the details panel. Applicable only to properties that will be displayed in Persona and UMG." },
+            new UE4Specifier { Name = "PinHiddenByDefault", Desc = "[PropertyMetadata] The property can be exposed as a data pin, but is hidden by default. Applicable only to properties that will be displayed in Persona and UMG." },
+            new UE4Specifier { Name = "PinShownByDefault", Desc = "[PropertyMetadata] The property can be exposed as a data pin and is visible by default. Applicable only to properties that will be displayed in Persona and UMG." },
+            new UE4Specifier { Name = "AlwaysAsPin", Desc = "[PropertyMetadata] The property is always exposed as a data pin. Applicable only to properties that will be displayed in Persona and UMG." },
+            new UE4Specifier { Name = "CustomizeProperty", Desc = "[PropertyMetadata] Indicates that the property has custom code to display and should not generate a standard property widget int he details panel. Applicable only to properties that will be displayed in Persona." },
+            };
+        // Metadata usable in UPROPERTY for customizing the behavior of Material Expressions
+        // TODO: Move this to be contained in that module?
+        public static UE4Specifier[] UMPM = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "OverridingInputProperty", Desc = "[PropertyMetadata] Used for float properties in MaterialExpression classes. If the specified FMaterialExpression pin is not connected, this value is used instead." },
+            new UE4Specifier { Name = "RequiredInput", Desc = "[PropertyMetadata] Used for FMaterialExpression properties in MaterialExpression classes. If specified the pin need not be connected and the value of the property marked as OverridingInputProperty will be used instead." },
+        };
+
+        // Metadata usable in UFUNCTION
+        public static UE4Specifier[] UMF = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "AdvancedDisplay", Desc = "[FunctionMetadata] Used with a comma-separated list of parameter names that should show up as advanced pins (requiring UI expansion). Alternatively you can set a number, which is the number of paramaters from the start that should *not* be marked as advanced (eg 'AdvancedDisplay=2' will mark all but the first two advanced)." },
+            new UE4Specifier { Name = "ArrayParm", Desc = "[FunctionMetadata] Indicates that a BlueprintCallable function should use a Call Array Function node and that the parameters specified in the comma delimited list should be treated as wild card array properties." },
+            new UE4Specifier { Name = "ArrayTypeDependentParams", Desc = "[FunctionMetadata] Used when ArrayParm has been specified to indicate other function parameters that should be treated as wild card properties linked to the type of the array parameter." },
+            new UE4Specifier { Name = "AutoCreateRefTerm", Desc = "[FunctionMetadata]" },
+            new UE4Specifier { Name = "BlueprintInternalUseOnly", Desc = "[FunctionMetadata] This function is an internal implementation detail, used to implement another function or node.  It is never directly exposed in a graph." },
+            new UE4Specifier { Name = "BlueprintProtected", Desc = "[FunctionMetadata] This function can only be called on 'this' in a blueprint. It cannot be called on another instance." },
+            new UE4Specifier { Name = "CallableWithoutWorldContext", Desc = "[FunctionMetadata] Used for BlueprintCallable functions that have a WorldContext pin to indicate that the function can be called even if the class does not implement the virtual function GetWorld()." },
+            new UE4Specifier { Name = "CommutativeAssociativeBinaryOperator", Desc = "[FunctionMetadata] Indicates that a BlueprintCallable function should use the Commutative Associative Binary node." },
+            new UE4Specifier { Name = "CompactNodeTitle", Desc = "[FunctionMetadata] Indicates that a BlueprintCallable function should display in the compact display mode and the name to use in that mode." },
+            new UE4Specifier { Name = "CustomStructureParam", Desc = "[FunctionMetadata]" },
+            new UE4Specifier { Name = "DefaultToSelf", Desc = "[FunctionMetadata] For BlueprintCallable functions indicates that the object property named's default value should be the self context of the node" },
+            new UE4Specifier { Name = "DeprecatedFunction", Desc = "[FunctionMetadata] This function is deprecated, any blueprint references to it cause a compilation warning." },
+            new UE4Specifier { Name = "ExpandEnumAsExecs", Desc = "[FunctionMetadata] For BlueprintCallable functions indicates that an input exec pin should be created for each entry in the enum specified." },
+            new UE4Specifier { Name = "HidePin", Desc = "[FunctionMetadata] For BlueprintCallable functions indicates that the parameter pin should be hidden from the user's view." },
+            new UE4Specifier { Name = "HideSpawnParms", Desc = "[FunctionMetadata]" },
+            new UE4Specifier { Name = "Keywords", Desc = "[FunctionMetadata] For BlueprintCallable functions provides additional keywords to be associated with the function for search purposes." },
+            new UE4Specifier { Name = "Latent", Desc = "[FunctionMetadata] Indicates that a BlueprintCallable function is Latent" },
+            new UE4Specifier { Name = "LatentInfo", Desc = "[FunctionMetadata] For Latent BlueprintCallable functions indicates which parameter is the LatentInfo parameter" },
+            new UE4Specifier { Name = "MaterialParameterCollectionFunction", Desc = "[FunctionMetadata] For BlueprintCallable functions indicates that the material override node should be used" },
+            new UE4Specifier { Name = "NativeBreakFunc", Desc = "[FunctionMetadata] For BlueprintCallable functions indicates that the function should be displayed the same as the implicit Break Struct nodes" },
+            new UE4Specifier { Name = "NativeMakeFunc", Desc = "[FunctionMetadata] For BlueprintCallable functions indicates that the function should be displayed the same as the implicit Make Struct nodes" },
+            new UE4Specifier { Name = "UnsafeDuringActorConstruction", Desc = "[FunctionMetadata] Used by BlueprintCallable functions to indicate that this function is not to be allowed in the Construction Script." },
+            new UE4Specifier { Name = "WorldContext", Desc = "[FunctionMetadta] Used by BlueprintCallable functions to indicate which parameter is used to determine the World that the operation is occurring within." },
+            new UE4Specifier { Name = "BlueprintAutocast", Desc = "[FunctionMetadta] Used only by static BlueprintPure functions from BlueprintLibrary. A cast node will be automatically added for the return type and the type of the first parameter of the function." },
+        };
+        
+        // Metadata usable in UINTERFACE
+        public static UE4Specifier[] UMI = new UE4Specifier[]
+        {
+            new UE4Specifier { Name = "CannotImplementInterfaceInBlueprint", Desc = "[InterfaceMetadata] This interface cannot be implemented by a blueprint (e.g., it has only non-exposed C++ member methods)" },
+        };
     }
 }

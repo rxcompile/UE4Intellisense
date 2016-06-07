@@ -25,7 +25,8 @@ namespace UE4Intellisense
         {
             var triggerPoint = session.GetTriggerPoint(m_textBuffer.CurrentSnapshot).GetValueOrDefault();
 
-            var tracker = TrackUE4MacroSpecifier(triggerPoint);
+            bool inMeta;
+            var tracker = TrackUE4MacroSpecifier(triggerPoint, out inMeta);
 
             if (tracker == null)
                 return;
@@ -36,7 +37,8 @@ namespace UE4Intellisense
                   "ue4",
                   "UProperty",
                   FindTokenSpanAtPosition(triggerPoint),
-                  ConstructCompletions(UE4SpecifiersSource.UP, tracker.Specifiers),
+                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UP, tracker.Specifiers) 
+                          : ConstructCompletions(UE4SpecifiersSource.UMP, tracker.MetaSpecifiers),
                   null);
 
                 completionSets.Add(ue4cs);
@@ -47,7 +49,8 @@ namespace UE4Intellisense
                   "ue4",
                   "UClass",
                   FindTokenSpanAtPosition(triggerPoint),
-                  ConstructCompletions(UE4SpecifiersSource.UC, tracker.Specifiers),
+                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UC, tracker.Specifiers)
+                          : ConstructCompletions(UE4SpecifiersSource.UMC, tracker.MetaSpecifiers),
                   null);
 
                 completionSets.Add(ue4cs);
@@ -58,7 +61,8 @@ namespace UE4Intellisense
                   "ue4",
                   "UInterface",
                   FindTokenSpanAtPosition(triggerPoint),
-                  ConstructCompletions(UE4SpecifiersSource.UI, tracker.Specifiers),
+                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UI, tracker.Specifiers)
+                          : ConstructCompletions(UE4SpecifiersSource.UMI, tracker.MetaSpecifiers),
                   null);
 
                 completionSets.Add(ue4cs);
@@ -69,7 +73,8 @@ namespace UE4Intellisense
                   "ue4",
                   "UFunction",
                   FindTokenSpanAtPosition(triggerPoint),
-                  ConstructCompletions(UE4SpecifiersSource.UF, tracker.Specifiers),
+                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.UF, tracker.Specifiers)
+                          : ConstructCompletions(UE4SpecifiersSource.UMF, tracker.MetaSpecifiers),
                   null);
 
                 completionSets.Add(ue4cs);
@@ -80,7 +85,8 @@ namespace UE4Intellisense
                   "ue4",
                   "UStruct",
                   FindTokenSpanAtPosition(triggerPoint),
-                  ConstructCompletions(UE4SpecifiersSource.US, tracker.Specifiers),
+                  !inMeta ? ConstructCompletions(UE4SpecifiersSource.US, tracker.Specifiers)
+                          : ConstructCompletions(UE4SpecifiersSource.UMS, tracker.MetaSpecifiers),
                   null);
 
                 completionSets.Add(ue4cs);
@@ -101,7 +107,7 @@ namespace UE4Intellisense
                 .Select(g => new Completion(g.Name, g.Name, g.Desc, null, null));
         }
 
-        private UE4Statement TrackUE4MacroSpecifier(SnapshotPoint triggerPoint)
+        private UE4Statement TrackUE4MacroSpecifier(SnapshotPoint triggerPoint, out bool inMeta)
         {
             SnapshotPoint currentPoint = triggerPoint - 1;
             ITextStructureNavigator navigator = m_sourceProvider.NavigatorService.GetTextStructureNavigator(m_textBuffer);
@@ -109,6 +115,8 @@ namespace UE4Intellisense
 
             SnapshotSpan statement = navigator.GetSpanOfEnclosing(extent.Span);
             var statementText = statement.GetText();
+
+            inMeta = false;
 
             var macros = typeof(UE4Macros).GetEnumNames().Aggregate("", (a, e) => a += "|" + e);
 
@@ -118,15 +126,51 @@ namespace UE4Intellisense
             if (!match.Groups[1].Success || !match.Groups[2].Success)
                 return null;
 
-            var macroConst = (UE4Macros)Enum.Parse(typeof(UE4Macros), match.Groups[1].Value);
-
             var contentPosition = statement.Start + match.Groups[2].Index;
             var contentEnd = contentPosition + match.Groups[2].Length;
 
             if (extent.Span.Start < contentPosition || extent.Span.End > contentEnd)
                 return null;
 
-            return new UE4Statement { MacroConst = macroConst, Specifiers = match.Groups[2].Value.Split(',').ToArray() };
+            var macroConst = (UE4Macros)Enum.Parse(typeof(UE4Macros), match.Groups[1].Value);
+
+            List<string> specifiersList;
+            List<string> metaList;
+
+            ParseSpecifiers(match.Groups[2].Value, extent, contentPosition, out inMeta, out specifiersList, out metaList);
+
+            return new UE4Statement { MacroConst = macroConst, Specifiers = specifiersList.ToArray(), MetaSpecifiers = metaList.ToArray() };
+        }
+
+        internal void ParseSpecifiers(string inputstr, TextExtent extent, SnapshotPoint contentPosition, out bool inMeta, out List<string> specifiersList, out List<string> metaList)
+        {
+            specifiersList = new List<string>();
+            metaList = new List<string>();
+
+            inMeta = false;
+
+            var matchSpecs = Regex.Matches(inputstr, @"meta=\(\s*(([\w\d=]+)\,?)*\s*\)|([\w\d=]+)\,?", RegexOptions.IgnoreCase);
+
+            foreach (var spec in matchSpecs)
+            {
+                var mm = (Match)spec;
+
+                if (mm.Groups[2].Success)
+                {
+                    var metaPositionStart = contentPosition + mm.Groups[2].Index;
+                    var metaPositionEnd = metaPositionStart + mm.Groups[2].Length;
+
+                    inMeta = (extent.Span.Start >= metaPositionStart && extent.Span.End <= metaPositionEnd);
+
+                    foreach (var ms in mm.Groups[2].Captures)
+                    {
+                        metaList.Add(((Capture)ms).Value);
+                    }
+                }
+
+                if (mm.Groups[3].Success)
+                    specifiersList.Add(mm.Groups[3].Value);
+            }
         }
 
         private void SessionSelectedCompletionSetChanged(object sender, ValueChangedEventArgs<CompletionSet> e)
