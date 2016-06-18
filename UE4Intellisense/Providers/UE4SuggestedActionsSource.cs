@@ -87,7 +87,7 @@ namespace UE4Intellisense.Providers
                 }
                 var specifiersNotInList =
                     ue4Statement.Specifiers
-                    .Select(c=>c.Split(new []{'='},StringSplitOptions.RemoveEmptyEntries)[0].ToUpper())//only take specifier and not its params
+                    .Select(c=>c.Split(new []{'='},StringSplitOptions.RemoveEmptyEntries)[0].Trim().ToUpper())//only take specifier and not its params
                     .Where(c => !datasource.Select(s => s.Name.ToUpper()).Contains(c)); //toupper compare
                 var moreThanOneSpecInGroup = datasource.Where(s => ue4Statement.Specifiers.Contains(s.Name))
                     .Where(c => c.Group != null)
@@ -100,7 +100,7 @@ namespace UE4Intellisense.Providers
                         s =>
                         {
                             var specStart = ue4Statement.SpecifiersSpan.Start +
-                                            ue4Statement.SpecifiersSpan.GetText().IndexOf(s, StringComparison.Ordinal);
+                                            ue4Statement.SpecifiersSpan.GetText().ToUpper().IndexOf(s, StringComparison.Ordinal);
                             var specEnd = specStart + s.Length;
                             var ss = new SnapshotSpan(specStart, specEnd);
                             return new UE4SpecifierNotValidSuggestedAction(
