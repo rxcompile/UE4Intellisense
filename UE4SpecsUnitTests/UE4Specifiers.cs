@@ -15,9 +15,7 @@ namespace UE4SpecsUnitTests
 
             var specifiersList = new List<string>();
             var metaList = new List<string>();
-
-            var inMeta = false;
-
+            
             var matchSpecs = Regex.Matches(input_string, @"meta=\(\s*(([\w\d=]+)\,?)*\s*\)|([\w\d=]+)\,?", RegexOptions.IgnoreCase);
 
             foreach (var spec in matchSpecs)
@@ -26,11 +24,6 @@ namespace UE4SpecsUnitTests
 
                 if (mm.Groups[2].Success)
                 {
-                    var metaPositionStart = 0 + mm.Groups[2].Index;
-                    var metaPositionEnd = metaPositionStart + mm.Groups[2].Length;
-
-                    inMeta = (0 >= metaPositionStart && 0 <= metaPositionEnd);
-
                     foreach (var ms in mm.Groups[2].Captures)
                     {
                         metaList.Add(((Capture)ms).Value);

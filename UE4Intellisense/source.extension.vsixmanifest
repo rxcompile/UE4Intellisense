@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="UE4Intellisense.RxCompiLe.78e5e8d1-7a13-4834-af33-776107712a0c" Version="1.0" Language="en-US" Publisher="RxCompiLe" />
+    <Identity Id="UE4Intellisense.RxCompiLe.78e5e8d1-7a13-4834-af33-776107712a0c" Version="2.0" Language="en-US" Publisher="RxCompiLe" />
     <DisplayName>UE4 Intellisense</DisplayName>
     <Description xml:space="preserve">Extends Intellisense. Adds Unreal Engine 4 specifiers for macros: UCLASS, UPROPERTY, UFUNCTION, USTRUCT and UINTERFACE</Description>
+    <License>LICENSE.md</License>
+    <PreviewImage>resources\screen2.png</PreviewImage>
     <Tags>Unreal Engine 4 UE4 UCLASS UPROPERTY UFUNCTION USTRUCT UINTERFACE</Tags>
   </Metadata>
   <Installation>
